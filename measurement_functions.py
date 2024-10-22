@@ -98,9 +98,9 @@ def runListSweep(parameters, ch1_list, ch2_list, wait=True):
     return data
 
 
-def pulsing(parameters):
+# def pulsing(parameters):
     # parameters = [Vd, Vg_low, Vg_high, time per pulse, duty cycle, number of pulses]
-    return null
+    # return null
 
 
 def findIdRange(Vd, Vg, Ig_range):
