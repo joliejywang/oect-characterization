@@ -4,6 +4,10 @@ import time
 # import functions from math
 from math_functions import sine
 
+# get inst value from connection
+import connect
+inst = connect.inst
+
 def runListSweep(parameters, ch1_list, ch2_list, wait=True):
     # parameters format (list of strings, units of seconds, amps, volts):
     # [(0) measurment points,(1) time per point,(2) measurement delay,(3) aquisition time,
@@ -94,7 +98,7 @@ def runListSweep(parameters, ch1_list, ch2_list, wait=True):
     return data
 
 
-def pulsing(parameters, null=None):
+def pulsing(parameters):
     # parameters = [Vd, Vg_low, Vg_high, time per pulse, duty cycle, number of pulses]
     return null
 
@@ -115,7 +119,7 @@ def findIdRange(Vd, Vg, Ig_range):
     Id_range = 1e-7
     overload = True
 
-    while overload == True:
+    while overload:
         inst.write(":sens2:curr:rang " + '{:.0E}'.format(Id_range))
         data_out = float(inst.query(":meas:curr? (@2)"))
         if data_out == np.nan or abs(data_out) > 0.8 * Id_range:
@@ -130,7 +134,8 @@ def generateSineSweep(cycles, points_per_cycle, amp, offset):
     sweep = ""
     for i in range(0, int(points_per_cycle * cycles)):
         sweep += "{:.3E}".format(round(sine(i, offset, amp, points_per_cycle), 5)) + ","
-    sweep += "{:.3E}".format(round(sine(i + 1, offset, amp, points_per_cycle), 5))
+    sweep += "{:.3E}".format(round(sine(int(points_per_cycle * cycles), offset, amp, points_per_cycle), 5))
+    # sweep += "{:.3E}".format(round(sine(i + 1, offset, amp, points_per_cycle), 5))
     return sweep
 
 
@@ -138,7 +143,8 @@ def generateLinSweep(points_per_sweep, v_start, v_end, reverse=False):
     sweep = ""
     for i in range(0, points_per_sweep):
         sweep += "{:.3E}".format(round(v_start + (i / points_per_sweep) * (v_end - v_start), 5)) + ","
-    sweep += "{:.3E}".format(round(v_start + ((i + 1) / points_per_sweep) * (v_end - v_start), 5))
+    # sweep += "{:.3E}".format(round(v_start + ((i + 1) / points_per_sweep) * (v_end - v_start), 5))
+    sweep += "{:.3E}".format(round(v_start + (points_per_sweep / points_per_sweep) * (v_end - v_start), 5))
     if reverse:
         sweep += ","
         for j in range(1, points_per_sweep):
