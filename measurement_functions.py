@@ -154,15 +154,15 @@ def generateLinSweep(points_per_sweep, v_start, v_end, reverse=False):
     return sweep
 
 
-def generateFreqs(start_freq, end_freq, points_per_dec):
-    decs = np.subtract(np.log10(end_freq), np.log10(start_freq))
-    freqs = np.logspace(np.log10(start_freq), np.log10(end_freq), int(decs * points_per_dec))
-    meas_time = "{:.1E}".format(1 / (12 * freqs[0]))
-    for i in range(1, len(freqs)):
-        meas_time += "," + "{:.1E}".format(1 / (12 * freqs[i]))
-    meas_time = np.asarray([float(i) for i in meas_time.split(',')])
-    freqs = 1 / (12 * meas_time)
-    return freqs, meas_time
+# def generateFreqs(start_freq, end_freq, points_per_dec):
+#     decs = np.subtract(np.log10(end_freq), np.log10(start_freq))
+#     freqs = np.logspace(np.log10(start_freq), np.log10(end_freq), int(decs * points_per_dec))
+#     meas_time = "{:.1E}".format(1 / (12 * freqs[0]))
+#     for i in range(1, len(freqs)):
+#         meas_time += "," + "{:.1E}".format(1 / (12 * freqs[i]))
+#     meas_time = np.asarray([float(i) for i in meas_time.split(',')])
+#     freqs = 1 / (12 * meas_time)
+#     return freqs, meas_time
 
 
 def generateFreqsV2(start_freq, end_freq, points_per_dec, max_meas_time=1e-3, min_meas_time=2e-5):
