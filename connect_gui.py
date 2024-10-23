@@ -7,6 +7,7 @@ import pyvisa
 
 window = tkinter.Tk()
 rm = pyvisa.ResourceManager()
+inst = None
 
 # view available resources
 def available_resources():
@@ -26,9 +27,15 @@ def available_resources():
 
 def select_resource_from_list():
     chosen = resource_list.get(ACTIVE)
+    global inst
     inst = rm.open_resource(chosen)
     inst_id = inst.query("*IDN?")
     messagebox.showinfo("connected", f"connected to {inst_id}")
+
+# for other gui that need to use inst that is connected to import into file
+def use_inst():
+    global inst
+    return inst
 
 # gui parts
 # resource list widget
