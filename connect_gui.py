@@ -37,6 +37,11 @@ def use_inst():
     global inst
     return inst
 
+def process_timeout_value():
+    timeout_value = float(time_val.get())
+    global inst
+    inst.timeout = timeout_value
+
 # gui parts
 # resource list widget
 resource_list = Listbox(window, width=25, height=10)
@@ -45,6 +50,12 @@ tkinter.Button(window, text="List Resources", command=available_resources()).pac
 
 # select resource
 tkinter.Button(window, text="Connect to Instrument", command=select_resource_from_list).pack(pady=5)
+
+# insert value for time out
+tkinter.Label(window, text="Set the instrument timeout value in ms: ").pack()
+time_val = Entry(window, width=20)
+time_val.pack()
+tkinter.Button(window, text="Set timeout value", command=process_timeout_value).pack(pady=5)
 
 # run gui
 window.mainloop()
