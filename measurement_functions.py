@@ -5,8 +5,11 @@ import time
 from math_functions import sine
 
 # get inst value from connection
-import connect
-inst = connect.inst
+# import connect
+# inst = connect.inst
+
+from connect_gui import use_inst
+inst = use_inst()
 
 def runListSweep(parameters, ch1_list, ch2_list, wait=True):
     # parameters format (list of strings, units of seconds, amps, volts):
