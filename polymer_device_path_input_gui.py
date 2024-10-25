@@ -7,9 +7,9 @@ from tkinter import messagebox
 window = tkinter.Tk()
 
 # declare global variables
-folder_path = None
-polymer = None
-device = None
+folder_path = ""
+polymer = ""
+device = ""
 
 def fill_path():
     global folder_path
@@ -21,6 +21,11 @@ def show_inputs():
     global device
     device = device_entry.get()
     global folder_path
+
+    # throw exception if a value is missing out of three inputs
+    if (len(polymer) == 0) or (len(device) == 0) or (len(folder_path) == 0):
+        raise Exception("WARNING: missing at least one input")
+
     messagebox.showinfo("Inputs", f"Inputs Entered:\nPolymer: {polymer}\nDevice: {device}\nPath: {folder_path}")
 
 # create widgets
