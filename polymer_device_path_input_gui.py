@@ -28,6 +28,18 @@ def show_inputs():
 
     messagebox.showinfo("Inputs", f"Inputs Entered:\nPolymer: {polymer}\nDevice: {device}\nPath: {folder_path}")
 
+def get_polymer():
+    global polymer
+    return polymer
+
+def get_device():
+    global device
+    return device
+
+def get_folder_path():
+    global folder_path
+    return folder_path
+
 # create widgets
 # polymer entry
 Label(window, text="Polymer: ").grid(row=0, column=0)
