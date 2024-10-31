@@ -166,6 +166,9 @@ def run_transfer_curves():
     inst.write(":outp2 off")
 
 def save_transfer_measurement():
+    # initialize global variables
+    global transfer_curve1, Vg_transfer_curve1, Vd_values_transfer_curve1
+
     # get filename input
     filename = filename_entry.get()
 
