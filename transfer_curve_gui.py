@@ -96,6 +96,9 @@ def set_settings():
                                   f"\nTime Hold: {t_hold_before_meas}")
 
 def run_transfer_curves():
+    # initialize global variables
+    global transfer_curve1, Vg_transfer_curve1, Vd_values_transfer_curve1
+
     # get entered labels
     Vg_init = get_vg_init()
     Vg_final = get_vg_final()
@@ -110,17 +113,17 @@ def run_transfer_curves():
     t_hold_before_meas = get_t_hold_before_meas()
 
     # Generate array of gate voltage values based on user input
-    Vd_values = np.empty((round((Vd_final - Vd_init) / Vd_step) + 1,))
-    for i in range(0, len(Vd_values)):
+    Vd_values_transfer_curve1 = np.empty((round((Vd_final - Vd_init) / Vd_step) + 1,))
+    for i in range(0, len(Vd_values_transfer_curve1)):
         if Vd_init > Vd_final:
             step = -1 * abs(Vd_step)
         else:
             step = abs(Vd_step)
-        Vd_values[i] = round(Vd_init + step * i, 4)
+        Vd_values_transfer_curve1[i] = round(Vd_init + step * i, 4)
 
     # Generate sweep for gate voltage based on user input
     vg_list = generateLinSweep(points_per_sweep, Vg_init, Vg_final, reverse=reverse_sweep)
-    vd_list = "{:.1E}".format(Vd_values[0])
+    vd_list = "{:.1E}".format(Vd_values_transfer_curve1[0])
 
     # parameters format (list of strings, units of seconds, amps, volts):
     # [(0) measurment points,(1) time per point,(2) measurement delay,(3) aquisition time,
@@ -139,18 +142,18 @@ def run_transfer_curves():
     parameters.append(t_hold_before_meas)
 
     # Create empty array to store output data
-    transfer = np.empty((len(Vd_values), int(parameters[0]), 4))
+    transfer_curve1 = np.empty((len(Vd_values_transfer_curve1), int(parameters[0]), 4))
 
     # Run transfer curve for each drain voltage and plot results
     # Run output curve for each gate voltage and plot results
-    transfer[0] = runListSweep(parameters, vg_list, vd_list, wait=False)
-    Vg = np.asarray([float(i) for i in vg_list.split(',')])
-    plt.plot(Vg, transfer[0, :, 2], label="$V_{DS}$ = " + str(Vd_values[0]))
+    transfer_curve1[0] = runListSweep(parameters, vg_list, vd_list, wait=False)
+    Vg_transfer_curve1 = np.asarray([float(i) for i in vg_list.split(',')])
+    plt.plot(Vg_transfer_curve1, transfer_curve1[0, :, 2], label="$V_{DS}$ = " + str(Vd_values_transfer_curve1[0]))
 
-    for i in range(1, len(transfer)):
-        vd_list = "{:.1E}".format(Vd_values[i])
-        transfer[i] = runListSweep(parameters, vg_list, vd_list)
-        plt.plot(Vg, transfer[i, :, 2], label="$V_{DS}$ = " + str(Vd_values[i]))
+    for i in range(1, len(transfer_curve1)):
+        vd_list = "{:.1E}".format(Vd_values_transfer_curve1[i])
+        transfer_curve1[i] = runListSweep(parameters, vg_list, vd_list)
+        plt.plot(Vg_transfer_curve1, transfer_curve1[i, :, 2], label="$V_{DS}$ = " + str(Vd_values_transfer_curve1[i]))
 
     plt.gca().invert_yaxis()
     plt.xlabel("$V_{GS}$ (V)")
@@ -172,11 +175,11 @@ def save_transfer_measurement():
 
     # save data
     trans_data = pd.DataFrame()
-    trans_data["Time (s)"] = transfer[0, :, 1]
-    trans_data["Vgs (V)"] = Vg
-    for i in range(0, len(transfer)):
-        trans_data["Ids (A) at Vd = " + str(Vd_values[i]) + " V"] = transfer[i, :, 2]
-        trans_data["Igs (A) at Vd = " + str(Vd_values[i]) + " V"] = transfer[i, :, 0]
+    trans_data["Time (s)"] = transfer_curve1[0, :, 1]
+    trans_data["Vgs (V)"] = Vg_transfer_curve1
+    for i in range(0, len(transfer_curve1)):
+        trans_data["Ids (A) at Vd = " + str(Vd_values_transfer_curve1[i]) + " V"] = transfer_curve1[i, :, 2]
+        trans_data["Igs (A) at Vd = " + str(Vd_values_transfer_curve1[i]) + " V"] = transfer_curve1[i, :, 0]
 
     trans_data.to_csv(path + folder + filename)
 
