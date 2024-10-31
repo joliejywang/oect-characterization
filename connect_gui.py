@@ -7,7 +7,7 @@ import pyvisa
 
 window = tkinter.Tk()
 rm = pyvisa.ResourceManager()
-inst = None
+# inst = None
 
 # view available resources
 def available_resources():
