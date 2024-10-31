@@ -7,9 +7,9 @@ from tkinter import messagebox
 window = tkinter.Tk()
 
 # declare global variables
-folder_path = ""
-polymer = ""
-device = ""
+# folder_path = ""
+# polymer = ""
+# device = ""
 
 def fill_path():
     global folder_path
