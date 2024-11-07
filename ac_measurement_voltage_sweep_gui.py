@@ -108,6 +108,9 @@ def set_settings():
                                   f"\nTime hold before meas: {t_hold_before_meas}")
 
 def run_ac_measurement_voltage_sweep():
+    # create global variables
+    global ac_volt_sweep_Vg_offset, ac_volt_sweep_Vd, ac_volt_sweep_Vg_amplitude, av_volt_sweeps
+
     # get settings
     gate_voltage_list = get_gate_voltage_list()
     drain_voltage_list = get_drain_voltage_list()
@@ -120,16 +123,16 @@ def run_ac_measurement_voltage_sweep():
     Est_capacitance = get_est_capacitance()
     max_meas_time = get_max_meas_time()
     min_meas_time = get_min_meas_time()
-    Vg_amplitude = get_vg_amplitude()
+    ac_volt_sweep_Vg_amplitude = get_vg_amplitude()
     t_hold_before_meas = get_t_hold()
 
     for k in range(0, len(drain_voltage_list)):
         for j in range(0, len(gate_voltage_list)):
 
-            Vd = drain_voltage_list[k]
-            Vg_offset = gate_voltage_list[j]
+            ac_volt_sweep_Vd = drain_voltage_list[k]
+            ac_volt_sweep_Vg_offset = gate_voltage_list[j]
 
-            Id_range = findIdRange(Vd, Vg_offset, Ig_range)
+            Id_range = findIdRange(ac_volt_sweep_Vd, ac_volt_sweep_Vg_offset, Ig_range)
 
             # ------------------------------------------------------------------------------------------
 
@@ -137,10 +140,10 @@ def run_ac_measurement_voltage_sweep():
             freqs, points_per_cycle, meas_time = generateFreqsV2(min_freq, max_freq, points_per_decade, max_meas_time,
                                                                  min_meas_time)
 
-            vg_list = generateSineSweep(cycles, points_per_cycle[0], Vg_amplitude, Vg_offset)
-            vd_list = "{:.1E}".format(Vd)
+            vg_list = generateSineSweep(cycles, points_per_cycle[0], ac_volt_sweep_Vg_amplitude, ac_volt_sweep_Vg_offset)
+            vd_list = "{:.1E}".format(ac_volt_sweep_Vd)
 
-            Ig_range = np.power(10, np.ceil(np.log10(Vg_amplitude * (2 * np.pi * freqs[0] * Est_capacitance))))
+            Ig_range = np.power(10, np.ceil(np.log10(ac_volt_sweep_Vg_amplitude * (2 * np.pi * freqs[0] * Est_capacitance))))
 
             # parameters format (list of strings, units of seconds, amps, volts):
             # [(0) measurment points,(1) time per point,(2) measurement delay,(3) aquisition time,
@@ -158,15 +161,15 @@ def run_ac_measurement_voltage_sweep():
             parameters.append("1")
             parameters.append(t_hold_before_meas)
 
-            sweeps = []
+            av_volt_sweeps = []
 
             data = runListSweep(parameters, vg_list, vd_list)
-            sweeps.append(data)
+            av_volt_sweeps.append(data)
 
             for i in range(1, len(meas_time)):
-                Ig_range = np.power(10, np.ceil(np.log10(Vg_amplitude * (2 * np.pi * freqs[i] * Est_capacitance))))
+                Ig_range = np.power(10, np.ceil(np.log10(ac_volt_sweep_Vg_amplitude * (2 * np.pi * freqs[i] * Est_capacitance))))
                 # Id_range = findIdRange(Vd,Vg_offset,Ig_range)
-                vg_list = generateSineSweep(cycles, points_per_cycle[i], Vg_amplitude, Vg_offset)
+                vg_list = generateSineSweep(cycles, points_per_cycle[i], ac_volt_sweep_Vg_amplitude, ac_volt_sweep_Vg_offset)
                 if Ig_range > 1e-5:
                     Ig_range = 1e-5
                 parameters[0] = "{:.0f}".format(len(vg_list.split(',')))
@@ -177,7 +180,7 @@ def run_ac_measurement_voltage_sweep():
                 parameters[6] = "{:.0f}".format(len(vg_list.split(',')))
 
                 data = runListSweep(parameters, vg_list, vd_list)
-                sweeps.append(data)
+                av_volt_sweeps.append(data)
 
             inst.write(":syst:beep 800,1.5")
             # Turn instrument output off after measurement
@@ -185,14 +188,17 @@ def run_ac_measurement_voltage_sweep():
             inst.write(":outp2 off")
 
 def save_ac_measurement_voltage_sweep_data():
+    # create global variables
+    global ac_volt_sweep_Vg_offset, ac_volt_sweep_Vd, ac_volt_sweep_Vg_amplitude, av_volt_sweeps
+
     # Create the path before trying to save
     # path = "C:\\Users\\skeen\\Dropbox\\000_Postdoctoral_Research\\Voltage-dependent mobility with Sophia\\OECT Data\\2023-02-20_pg1T2-g5T2_100mM_NaCl\\"
     folder = polymer + "\\" + device + "\\"
 
     ### Save data ###
-    filename = "AC Sweep Vg " + str(Vg_offset) + " Vd " + str(Vd) + "Vg amp " + str(Vg_amplitude)
+    filename = "AC Sweep Vg " + str(ac_volt_sweep_Vg_offset) + " Vd " + str(ac_volt_sweep_Vd) + "Vg amp " + str(ac_volt_sweep_Vg_amplitude)
     with open(path + folder + filename, 'wb') as fp:
-        pickle.dump(sweeps, fp)
+        pickle.dump(av_volt_sweeps, fp)
 
 # create gate voltage list entries
 Label(window, text="Gate Voltage List: ").grid(row=0, column=0)
