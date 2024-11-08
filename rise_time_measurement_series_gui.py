@@ -104,9 +104,6 @@ def run_rise_time_measurement_series():
     inst.write(':outp1 off')
     inst.write(':outp2 off')
 
-
-
-
 # vd entry
 Label(window, text="Vd: ").grid(row=0, column=0)
 vd_entry = Entry(window)
@@ -128,6 +125,8 @@ vg_final_entry.grid(row=2, column=1)
 # show settings to check
 Button(window, text="Show or Check Settings: ", command=set_settings).grid(row=3, column=0)
 
+# button to run measurement
+Button(window, text="Run Rise Time Measurement Series: ", command=run_rise_time_measurement_series).grid(row=12, column=0)
 
 # run gui
 window.mainloop()
