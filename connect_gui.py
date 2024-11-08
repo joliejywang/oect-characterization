@@ -17,15 +17,15 @@ def available_resources():
     # detect resources
     resource_tuple = rm.list_resources()
 
-    # check if resources detected
-    if len(resource_tuple) == 0:
-        raise Exception("no resources detected")
-    else:
-        # create list for listbox of resources
-        for resource in resource_tuple:
-            resource_list.insert(END, resource)
-    # for resource in resource_tuple:
-    #     resource_list.insert(END, resource)
+    # # check if resources detected
+    # if len(resource_tuple) == 0:
+    #     raise Exception("no resources detected")
+    # else:
+    #     # create list for listbox of resources
+    #     for resource in resource_tuple:
+    #         resource_list.insert(END, resource)
+    for resource in resource_tuple:
+        resource_list.insert(END, resource)
 
 def select_resource_from_list():
     chosen = resource_list.get(ACTIVE)
