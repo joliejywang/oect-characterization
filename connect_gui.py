@@ -24,6 +24,8 @@ def available_resources():
         # create list for listbox of resources
         for resource in resource_tuple:
             resource_list.insert(END, resource)
+    # for resource in resource_tuple:
+    #     resource_list.insert(END, resource)
 
 def select_resource_from_list():
     chosen = resource_list.get(ACTIVE)
