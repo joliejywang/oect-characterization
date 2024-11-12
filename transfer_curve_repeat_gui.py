@@ -93,6 +93,7 @@ def run_repeat_transfer_curve():
     # get entered values
     Vg_init = get_vg_init()
     Vg_final = get_vg_final()
+    global Vd
     Vd = get_vd()
     time_per_point = get_time_per_point()
     points_per_sweep = get_points_per_sweep()
@@ -142,6 +143,10 @@ def run_repeat_transfer_curve():
     # Turn SMU output off after all measurements
     inst.write(":outp1 off")
     inst.write(":outp2 off")
+
+def get_vd_for_plot():
+    global Vd
+    return Vd
 
 # create widgets
 # create input fields for setting

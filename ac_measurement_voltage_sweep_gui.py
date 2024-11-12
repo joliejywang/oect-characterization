@@ -53,6 +53,7 @@ def get_points_per_decade():
     return points_per_decade
 
 def get_cycles():
+    global cycles
     cycles = int(cycles_entry.get())
     return cycles
 
@@ -110,6 +111,9 @@ def set_settings():
 def run_ac_measurement_voltage_sweep():
     # create global variables
     global ac_volt_sweep_Vg_offset, ac_volt_sweep_Vd, ac_volt_sweep_Vg_amplitude, av_volt_sweeps
+
+    # get freqs
+    global freqs, points_per_cycle, sweeps
 
     # get settings
     gate_voltage_list = get_gate_voltage_list()
@@ -199,6 +203,22 @@ def save_ac_measurement_voltage_sweep_data():
     filename = "AC Sweep Vg " + str(ac_volt_sweep_Vg_offset) + " Vd " + str(ac_volt_sweep_Vd) + "Vg amp " + str(ac_volt_sweep_Vg_amplitude)
     with open(path + folder + filename, 'wb') as fp:
         pickle.dump(av_volt_sweeps, fp)
+
+def get_freqs():
+    global freqs
+    return freqs
+
+def get_points_per_cycle():
+    global points_per_cycle
+    return points_per_cycle
+
+def get_sweeps():
+    global sweeps
+    return sweeps
+
+def get_vg_amp():
+    global ac_volt_sweep_Vg_amplitude
+    return ac_volt_sweep_Vg_amplitude
 
 # create gate voltage list entries
 Label(window, text="Gate Voltage List: ").grid(row=0, column=0)
