@@ -2,6 +2,7 @@
 import tkinter
 from tkinter import *
 from tkinter import messagebox
+import pandas as pd
 
 # plot function
 from plot import plotPulse
@@ -79,7 +80,8 @@ def set_settings():
 
 def run_rise_time_measurement():
     # get variables
-    Vd = get_vd()
+    global rise_time_Vd
+    rise_time_Vd = get_vd()
     Vg_init = get_vg_init()
     Vg_final = get_vg_final()
     Id_range = get_id_range()
@@ -89,7 +91,7 @@ def run_rise_time_measurement():
     meas_time = get_meas_time()
 
     vg_list = generatePulse(Vg_init, Vg_final, pulse_width, meas_time)
-    vd_list = "{:.1E}".format(Vd)
+    vd_list = "{:.1E}".format(rise_time_Vd)
 
     # parameters format (list of strings, units of seconds, amps, volts):
     # [(0) measurment points,(1) time per point,(2) measurement delay,(3) aquisition time,
@@ -107,13 +109,28 @@ def run_rise_time_measurement():
     parameters.append("1")
     parameters.append(t_hold_before_meas)
 
-    pulse = runListSweep(parameters, vg_list, vd_list)
+    global rise_time_pulse
+    rise_time_pulse = runListSweep(parameters, vg_list, vd_list)
 
     inst.write(':outp1 off')
     inst.write(':outp2 off')
 
-    plotPulse(pulse)
+    plotPulse(rise_time_pulse)
 
+def save_rise_time_measurement():
+    global rise_time_pulse, rise_time_Vd
+
+    # get filename input
+    filename = filename_entry.get()
+    folder = str(device) + "//Rise time//Moving front evening//"
+
+    outp_data = pd.DataFrame()
+    outp_data["Time (s)"] = rise_time_pulse[:, 1]
+    outp_data["Vds (V)"] = rise_time_Vd
+    outp_data["Ids (A)"] = rise_time_pulse[:, 2]
+    outp_data["Igs (A)"] = rise_time_pulse[:, 0]
+
+    outp_data.to_csv(path + folder + filename)
 
 # vg final entry
 Label(window, text="Vd: ").grid(row=0, column=0)
@@ -153,6 +170,14 @@ Button(window, text="Show or Check Settings: ", command=set_settings).grid(row=8
 
 # button to run measurement
 Button(window, text="Run Rise Time Measurement: ", command=run_rise_time_measurement).grid(row=9, column=0)
+
+# enter filename to save as
+Label(window, text="Filename to Save As: ").grid(row=10, column=0)
+filename_entry = Entry(window)
+filename_entry.grid(row=10, column=1)
+
+# save last transfer measurement
+Button(window, text="Save Last Rise Time Measurement: ", command=save_rise_time_measurement).grid(row=11, column=0)
 
 # run gui
 window.mainloop()
