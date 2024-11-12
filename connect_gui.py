@@ -48,7 +48,7 @@ def process_timeout_value():
 # resource list widget
 resource_list = Listbox(window, width=25, height=10)
 resource_list.pack(pady=5, padx=5)
-tkinter.Button(window, text="List Resources", command=available_resources()).pack(pady=5)
+tkinter.Button(window, text="List Resources", command=available_resources).pack(pady=5)
 
 # select resource
 tkinter.Button(window, text="Connect to Instrument", command=select_resource_from_list).pack(pady=5)
