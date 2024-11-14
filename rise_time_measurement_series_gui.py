@@ -22,7 +22,9 @@ window = tkinter.Tk()
 
 # get variables
 def get_vd():
-    Vd = [float(vd_entry.get())]
+    Vd = []
+    for vd_init in vd_init_entries:
+        Vd.append(float(vd_init.get()))
     return Vd
 
 def get_vg_init_list():
@@ -59,7 +61,7 @@ def run_rise_time_measurement_series():
     for i in range(0, len(Vd)):
         for j in range(0, len(Vg_init)):
             for k in range(0, len(Vg_final)):
-                # Vg_final = -0.65
+                Vg_final = -0.65
                 Id_range = 1e-2
                 Ig_range = 1e-4
                 pulse_width = 0.5  # time in seconds
@@ -106,8 +108,11 @@ def run_rise_time_measurement_series():
 
 # vd entry
 Label(window, text="Vd: ").grid(row=0, column=0)
-vd_entry = Entry(window)
-vd_entry.grid(row=0, column=1)
+vd_init_entries = []
+for i in range (2):
+    vd_init_entry = Entry(window)
+    vd_init_entry.grid(row=0, column=i+1)
+    vd_init_entries.append(vd_init_entry)
 
 # create vg init list entries
 Label(window, text="Vg Init List: ").grid(row=1, column=0)
